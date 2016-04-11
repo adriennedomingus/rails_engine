@@ -21,6 +21,4 @@ group :development do
   gem 'spring'
 end
 
-group :coverage do
-  gem 'simplecov', :require => false
-end
+gem 'simplecov', :require => false, :group => :test
