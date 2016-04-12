@@ -2,6 +2,10 @@ class Merchant < ActiveRecord::Base
   has_many :items
   has_many :invoices
 
+  def self.ranked_by_revenue
+    all.sort_by { |merchant| merchant.total_revenue[:revenue].to_f }.reverse
+  end
+
   def total_revenue
     revenue = 0
     self.invoices.each do |invoice|

@@ -10,6 +10,10 @@ module Api
           respond_with Merchant.find(params[:id]).total_revenue
         end
       end
+
+      def index
+        respond_with Merchant.ranked_by_revenue.take(params[:quantity].to_i)
+      end
     end
   end
 end
