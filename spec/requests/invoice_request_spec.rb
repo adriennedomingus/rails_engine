@@ -46,4 +46,31 @@ RSpec.describe "Invoice endpoint" do
     get "/api/v1/invoices/random.json"
     expect(response.status).to eq(200)
   end
+
+  it "returns customer associted with an invoice" do
+    m = Merchant.create(name: "merchant")
+    Customer.create(first_name: "adrienne", last_name: "domingus")
+    c2 = Customer.create(first_name: "justin", last_name: "domingus")
+    c3 = Customer.create(first_name: "name", last_name: "last name")
+    c3.invoices.create(merchant_id: m.id, status: "success")
+    i2 = c3.invoices.create(merchant_id: m.id, status: "success")
+    c2.invoices.create(merchant_id: m.id, status: "success")
+
+    get "/api/v1/invoices/#{i2.id}/customer"
+    result = JSON.parse(response.body)
+    expect(result["id"]).to eq(c3.id)
+  end
+
+  it "returns merchant associated with an invoice" do
+    m = Merchant.create(name: "merchant")
+    m2= Merchant.create(name: "merchant2")
+    c3 = Customer.create(first_name: "name", last_name: "last name")
+    c3.invoices.create(merchant_id: m.id, status: "success")
+    i = c3.invoices.create(merchant_id: m.id, status: "success")
+    c3.invoices.create(merchant_id: m.id, status: "success")
+
+    get "/api/v1/invoices/#{i.id}/merchant"
+    result = JSON.parse(response.body)
+    expect(result["id"]).to eq(m.id)
+  end
 end

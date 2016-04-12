@@ -60,11 +60,25 @@ RSpec.describe "Customer endpoint" do
   end
 
   it "returns a random customer" do
-    c1 = Customer.create(first_name: "adrienne", last_name: "domingus")
-    c2 = Customer.create(first_name: "justin", last_name: "domingus")
-    c3 = Customer.create(first_name: "name", last_name: "last name")
+    Customer.create(first_name: "adrienne", last_name: "domingus")
+    Customer.create(first_name: "justin", last_name: "domingus")
+    Customer.create(first_name: "name", last_name: "last name")
 
     get "/api/v1/customers/random.json"
     expect(response.status).to eq(200)
+  end
+
+  it "returns all invoices associated with a customer" do
+    m = Merchant.create(name: "merchant")
+    Customer.create(first_name: "adrienne", last_name: "domingus")
+    c2 = Customer.create(first_name: "justin", last_name: "domingus")
+    c3 = Customer.create(first_name: "name", last_name: "last name")
+    c3.invoices.create(merchant_id: m.id, status: "success")
+    c3.invoices.create(merchant_id: m.id, status: "success")
+    c2.invoices.create(merchant_id: m.id, status: "success")
+
+    get "/api/v1/customers/#{c3.id}/invoices"
+    result = JSON.parse(response.body)
+    expect(result.count).to eq(2)
   end
 end

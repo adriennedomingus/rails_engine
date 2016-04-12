@@ -10,7 +10,7 @@ RSpec.describe "Transaction endpoint" do
     invoice2 = customer2.invoices.create(merchant_id: merchant.id, status: "shipped")
     invoice3 = customer.invoices.create(merchant_id: merchant2.id, status: "shipped")
     t1 = invoice1.transactions.create(credit_card_number: "3333333333333333")
-    t2 = invoice2.transactions.create(credit_card_number: "4444444444444444")
+    invoice2.transactions.create(credit_card_number: "4444444444444444")
     t3 = invoice3.transactions.create(credit_card_number: "5555555555555555")
 
     get "/api/v1/transactions.json"
@@ -36,7 +36,37 @@ RSpec.describe "Transaction endpoint" do
     expect(result["credit_card_number"]).to eq(t2.credit_card_number)
   end
 
-  it "returns a specific transaction" do
+  it "returns a transaction by invoice id" do
+    customer = Customer.create(first_name: "adrienne", last_name: "domingus")
+    customer2 = Customer.create(first_name: "other", last_name: "other last")
+    merchant = Merchant.create(name: "the merchant")
+    invoice1 = customer.invoices.create(merchant_id: merchant.id, status: "shipped")
+    invoice2 = customer2.invoices.create(merchant_id: merchant.id, status: "shipped")
+    invoice1.transactions.create(credit_card_number: "3333333333333333")
+    invoice2.transactions.create(credit_card_number: "4444444444444444")
+
+    get "/api/v1/transactions/find?invoice_id=#{invoice2.id}"
+    result = JSON.parse(response.body)
+
+    expect(result["invoice_id"]).to eq(invoice2.id)
+  end
+
+  it "returns the invoice associated with a transaction" do
+    customer = Customer.create(first_name: "adrienne", last_name: "domingus")
+    customer2 = Customer.create(first_name: "other", last_name: "other last")
+    merchant = Merchant.create(name: "the merchant")
+    invoice1 = customer.invoices.create(merchant_id: merchant.id, status: "shipped")
+    invoice2 = customer2.invoices.create(merchant_id: merchant.id, status: "shipped")
+    invoice1.transactions.create(credit_card_number: "3333333333333333")
+    t2 = invoice2.transactions.create(credit_card_number: "4444444444444444")
+
+    get "/api/v1/transactions/#{t2.id}/invoice"
+    result = JSON.parse(response.body)
+
+    expect(result["id"]).to eq(invoice2.id)
+  end
+
+  it "returns a random transaction" do
     customer = Customer.create(first_name: "adrienne", last_name: "domingus")
     customer2 = Customer.create(first_name: "other", last_name: "other last")
     merchant = Merchant.create(name: "the merchant")
