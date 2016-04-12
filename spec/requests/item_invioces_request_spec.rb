@@ -13,7 +13,7 @@ RSpec.describe "Item invoice endpoint" do
     invoice2 = customer.invoices.create(merchant_id: m2.id, status: "shipped")
     customer2.invoices.create(merchant_id: m1.id, status: "shipped")
     customer.invoices.create(merchant_id: m2.id, status: "shipped")
-    ii1 = item1.invoice_items.create(invoice_id: invoice1.id, quantity: 3, unit_price: item1.unit_price)
+    item1.invoice_items.create(invoice_id: invoice1.id, quantity: 3, unit_price: item1.unit_price)
     item2.invoice_items.create(invoice_id: invoice2.id, quantity: 2, unit_price: item2.unit_price)
     item3.invoice_items.create(invoice_id: invoice1.id, quantity: 7, unit_price: item3.unit_price)
 

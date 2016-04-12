@@ -14,6 +14,18 @@ module Api
           respond_with Merchant.find_by(created_at: params[:updated_at])
         end
       end
+
+      def index
+        if params[:id]
+          respond_with Merchant.where(id: params[:id])
+        elsif params[:name]
+          respond_with Merchant.where(name: params[:name])
+        elsif params[:created_at]
+          respond_with Merchant.where(created_at: params[:created_at])
+        elsif params[:updated_at]
+          respond_with Merchant.where(created_at: params[:updated_at])
+        end
+      end
     end
   end
 end
