@@ -34,6 +34,7 @@ Rails.application.routes.draw do
       get "/merchants/:id/items", to: "merchants/items#index"
       get "/merchants/:id/invoices", to: "merchants/invoices#index"
       get "/merchants/:id/revenue", to: "merchants/revenue#show"
+      get "/merchants/:id/customers_with_pending_invoices", to: "merchants/pending#index"
 
       get "/transactions/find", to: "transactions/finder#show"
       get "/transactions/find_all", to: "transactions/finder#index"

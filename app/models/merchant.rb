@@ -25,4 +25,16 @@ class Merchant < ActiveRecord::Base
     end
     { revenue: revenue.to_f.to_s }
   end
+
+  def customers_with_pending_invoices
+    customers = []
+    self.invoices.each do |invoice|
+      invoice.transactions.each do |transaction|
+        if transaction.result == "failed"
+          customers << transaction.invoice.customer
+        end
+      end
+    end
+    customers.uniq
+  end
 end
