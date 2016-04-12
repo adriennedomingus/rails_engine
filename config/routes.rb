@@ -8,10 +8,17 @@ Rails.application.routes.draw do
       get "/invoice_items/find", to: "invoice_items/finder#show"
       get "/invoice_items/find_all", to: "invoice_items/finder#index"
       get "/invoice_items/random", to: "invoice_items/random#show"
-
+      get "/invoice_items/:id/invoice", to: "invoice_items/invoices#show"
+      get "/invoice_items/:id/item", to: "invoice_items/items#show"
+ 
       get "/invoices/find", to: "invoices/finder#show"
       get "/invoices/find_all", to: "invoices/finder#index"
       get "/invoices/random", to: "invoices/random#show"
+      get "/invoices/:id/transactions", to: "invoices/transactions#index"
+      get "/invoices/:id/invoice_items", to: "invoices/invoice_items#index"
+      get "/invoices/:id/items", to: "invoices/items#index"
+      get "/invoices/:id/customer", to: "invoices/customers#index"
+      get "/invoices/:id/merchant", to: "invoices/merchants#index"
 
       get "/items/find", to: "items/finder#show"
       get "/items/find_all", to: "items/finder#index"
