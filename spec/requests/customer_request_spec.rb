@@ -14,4 +14,16 @@ RSpec.describe "Customer endpoint" do
     expect(result[2]["id"]).to eq(c3.id)
     expect(result[1]["last_name"]).to eq(c2.last_name)
   end
+
+  it "returns specific customer" do
+    c1 = Customer.create(first_name: "adrienne", last_name: "domingus")
+    c2 = Customer.create(first_name: "justin", last_name: "domingus")
+
+    get "/api/v1/customers/#{c2.id}.json"
+    result = JSON.parse(response.body)
+
+    expect(result["first_name"]).to eq(c2.first_name)
+    expect(result["last_name"]).to eq(c2.last_name)
+
+  end
 end
