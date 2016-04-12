@@ -71,4 +71,22 @@ RSpec.describe "Item invoice endpoint" do
     expect(result["quantity"]).to eq(3)
     expect(result["unit_price"]).to eq(item1.unit_price.to_s)
   end
+
+  it "finds a random item invoice" do
+    m1 = Merchant.create(name: "merchant 1")
+    m2 = Merchant.create(name: "merchant 2")
+    item1 = m1.items.create(name: "item name", description: "item description", unit_price: 10.00)
+    item2 = m1.items.create(name: "item 2 name", description: "item 2 description", unit_price: 20.00)
+    customer = Customer.create(first_name: "adrienne", last_name: "domingus")
+    customer2 = Customer.create(first_name: "other", last_name: "other last")
+    invoice1 = customer.invoices.create(merchant_id: m1.id, status: "shipped")
+    invoice2 = customer.invoices.create(merchant_id: m2.id, status: "shipped")
+    customer2.invoices.create(merchant_id: m1.id, status: "shipped")
+    customer.invoices.create(merchant_id: m2.id, status: "shipped")
+    item1.invoice_items.create(invoice_id: invoice1.id, quantity: 3, unit_price: item1.unit_price)
+    item2.invoice_items.create(invoice_id: invoice2.id, quantity: 2, unit_price: item2.unit_price)
+
+    get "/api/v1/invoice_items/random.json"
+    expect(response.status).to eq(200)
+  end
 end

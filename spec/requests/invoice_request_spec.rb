@@ -34,4 +34,16 @@ RSpec.describe "Invoice endpoint" do
     expect(result["merchant_id"]).to eq(merchant2.id)
     expect(result["status"]).to eq("shipped")
   end
+
+  it "returns a random invoice" do
+    customer = Customer.create(first_name: "adrienne", last_name: "domingus")
+    customer2 = Customer.create(first_name: "other name", last_name: "last name")
+    merchant = Merchant.create(name: "the merchant")
+    merchant2 = Merchant.create(name: "the merchant")
+    customer.invoices.create(merchant_id: merchant.id, status: "shipped")
+    customer2.invoices.create(merchant_id: merchant2.id, status: "shipped")
+
+    get "/api/v1/invoices/random.json"
+    expect(response.status).to eq(200)
+  end
 end

@@ -58,4 +58,13 @@ RSpec.describe "Customer endpoint" do
     expect(result["first_name"]).to eq(c2.first_name)
     expect(result["last_name"]).to eq(c2.last_name)
   end
+
+  it "returns a random customer" do
+    c1 = Customer.create(first_name: "adrienne", last_name: "domingus")
+    c2 = Customer.create(first_name: "justin", last_name: "domingus")
+    c3 = Customer.create(first_name: "name", last_name: "last name")
+
+    get "/api/v1/customers/random.json"
+    expect(response.status).to eq(200)
+  end
 end

@@ -28,6 +28,14 @@ RSpec.describe "Item  endpoint" do
     expect(result["name"]).to eq(i1.name)
     expect(result["description"]).to eq(i1.description)
     expect(result["unit_price"]).to eq(i1.unit_price.to_s)
+  end
 
+  it "returns a random item" do
+    m1 = Merchant.create(name: "merchant 1")
+    m1.items.create(name: "item name", description: "item description", unit_price: 10.00)
+    m1.items.create(name: "item 2 name", description: "item 2 description", unit_price: 20.00)
+
+    get "/api/v1/items/random.json"
+    expect(response.status).to eq(200)
   end
 end

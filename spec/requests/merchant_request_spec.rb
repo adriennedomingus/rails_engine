@@ -23,6 +23,13 @@ RSpec.describe "Merchant endpoint" do
     result = JSON.parse(response.body)
 
     expect(result["name"]).to eq(m1.name)
+  end
 
+  it "returns a random merchant" do
+    m1 = Merchant.create(name: "merchant 1")
+    Merchant.create(name: "merchant 2")
+
+    get "/api/v1/merchants/random.json"
+    expect(response.status).to eq(200)
   end
 end
