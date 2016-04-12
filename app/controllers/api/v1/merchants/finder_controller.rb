@@ -4,28 +4,25 @@ module Api
       respond_to :json
 
       def show
-        if params[:id]
-          respond_with Merchant.find(params[:id])
-        elsif params[:name]
-          respond_with Merchant.find_by(name: params[:name])
-        elsif params[:created_at]
-          respond_with Merchant.find_by(created_at: params[:created_at])
-        elsif params[:updated_at]
-          respond_with Merchant.find_by(created_at: params[:updated_at])
+        if params[:name]
+          respond_with Merchant.find_by("lower(name) = ?", params[:name].downcase)
+        else
+          respond_with Merchant.find_by(param.to_sym => params[param])
         end
       end
 
       def index
-        if params[:id]
-          respond_with Merchant.where(id: params[:id])
-        elsif params[:name]
-          respond_with Merchant.where(name: params[:name])
-        elsif params[:created_at]
-          respond_with Merchant.where(created_at: params[:created_at])
-        elsif params[:updated_at]
-          respond_with Merchant.where(created_at: params[:updated_at])
+        if params[:name]
+          respond_with Merchant.where("lower(name) = ?", params[:name].downcase)
+        else
+          respond_with Merchant.where(param.to_sym => params[param])
         end
       end
+
+      private
+        def param
+          params.keys.first
+        end
     end
   end
 end

@@ -4,40 +4,29 @@ module Api
       respond_to :json
 
       def show
-        if params[:id]
-          respond_with Item.find(params[:id])
-        elsif params[:name]
-          respond_with Item.find_by(name: params[:name])
+        if params[:name]
+          respond_with Item.find_by("lower(name) = ?", params[:name].downcase)
         elsif params[:description]
-          respond_with Item.find_by(description: params[:description])
-        elsif params[:merchant_id]
-          respond_with Item.find_by(merchant_id: params[:merchant_id])
-        elsif params[:unit_price]
-          respond_with Item.find_by(unit_price: params[:unit_price])
-        elsif params[:created_at]
-          respond_with Item.find_by(created_at: params[:created_at])
-        elsif params[:updated_at]
-          respond_with Item.find_by(created_at: params[:updated_at])
+          respond_with Item.find_by("lower(description) = ?", params[:description].downcase)
+        else
+          respond_with Item.find_by(param.to_sym => params[param])
         end
       end
 
       def index
-        if params[:id]
-          respond_with Item.where(id: params[:id])
-        elsif params[:name]
-          respond_with Item.where(name: params[:name])
+        if params[:name]
+          respond_with Item.where("lower(name) = ?", params[:name].downcase)
         elsif params[:description]
-          respond_with Item.where(description: params[:description])
-        elsif params[:merchant_id]
-          respond_with Item.where(merchant_id: params[:merchant_id])
-        elsif params[:unit_price]
-          respond_with Item.where(unit_price: params[:unit_price])
-        elsif params[:created_at]
-          respond_with Item.where(created_at: params[:created_at])
-        elsif params[:updated_at]
-          respond_with Item.where(created_at: params[:updated_at])
+          respond_with Item.where("lower(description) = ?", params[:description].downcase)
+        else
+          respond_with Item.where(param.to_sym => params[param])
         end
       end
+
+      private
+        def param
+          params.keys.first
+        end
     end
   end
 end
