@@ -16,7 +16,7 @@ RSpec.describe "Customer endpoint" do
   end
 
   it "returns specific customer" do
-    c1 = Customer.create(first_name: "adrienne", last_name: "domingus")
+    Customer.create(first_name: "adrienne", last_name: "domingus")
     c2 = Customer.create(first_name: "justin", last_name: "domingus")
 
     get "/api/v1/customers/#{c2.id}.json"
@@ -24,6 +24,38 @@ RSpec.describe "Customer endpoint" do
 
     expect(result["first_name"]).to eq(c2.first_name)
     expect(result["last_name"]).to eq(c2.last_name)
+  end
 
+  it "finds customer by id" do
+    Customer.create(first_name: "adrienne", last_name: "domingus")
+    c2 = Customer.create(first_name: "justin", last_name: "domingus")
+
+    get "/api/v1/customers/find?id=#{c2.id}"
+    result = JSON.parse(response.body)
+
+    expect(result["first_name"]).to eq(c2.first_name)
+    expect(result["last_name"]).to eq(c2.last_name)
+  end
+
+  it "finds by first name case insensitive" do
+    Customer.create(first_name: "adrienne", last_name: "domingus")
+    c2 = Customer.create(first_name: "justin", last_name: "domingus")
+
+    get "/api/v1/customers/find?first_name=JUSTin"
+    result = JSON.parse(response.body)
+
+    expect(result["first_name"]).to eq(c2.first_name)
+    expect(result["last_name"]).to eq(c2.last_name)
+  end
+
+  it "finds by last name" do
+    Customer.create(first_name: "adrienne", last_name: "domingus")
+    c2 = Customer.create(first_name: "justin", last_name: "other last")
+
+    get "/api/v1/customers/find?last_name=#{c2.last_name}"
+    result = JSON.parse(response.body)
+
+    expect(result["first_name"]).to eq(c2.first_name)
+    expect(result["last_name"]).to eq(c2.last_name)
   end
 end

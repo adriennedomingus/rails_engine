@@ -33,6 +33,5 @@ RSpec.describe "Invoice endpoint" do
     expect(result["customer_id"]).to eq(customer2.id)
     expect(result["merchant_id"]).to eq(merchant2.id)
     expect(result["status"]).to eq("shipped")
-
   end
 end
