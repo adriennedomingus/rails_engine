@@ -27,8 +27,7 @@ class Merchant < ActiveRecord::Base
   end
 
   def items_sold
-    invoices
-    .joins(invoice_items: :transactions)
+    invoices.joins(invoice_items: :transactions)
     .where(transactions: {result: "success"})
     .sum('invoice_items.quantity')
   end
@@ -46,7 +45,7 @@ class Merchant < ActiveRecord::Base
   end
 
   def favorite_customer
-    customers.joins(invoice_items: :transactions)
+    customers.joins(:transactions)
       .where(transactions: { result: 'success' })
       .group(:id)
       .order('transactions.count DESC')
