@@ -46,4 +46,13 @@ class Merchant < ActiveRecord::Base
   def customers_with_pending_invoices
     Customer.where(id: invoices.pending.pluck(:customer_id))
   end
+
+  def favorite_customer
+    Customer.joins(invoice_items: [:invoice, :transactions])
+      .where(transactions: { result: 'success' })
+      .where(invoices: { merchant_id: self.id} )
+      .group(:id)
+      .order('transactions.count DESC')
+      .first
+  end
 end
