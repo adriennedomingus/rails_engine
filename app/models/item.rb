@@ -4,10 +4,10 @@ class Item < ActiveRecord::Base
   has_many :invoices, through: :invoice_items
 
   def self.ranked_by_revenue
-    select('id', 'name', 'SUM(invoice_items.unit_price * invoice_items.quantity) AS total_revenue')
+    select('id', 'name', 'SUM(invoice_items.unit_price * invoice_items.quantity) AS total_item_revenue')
       .joins(invoice_items: [:invoice, :transactions])
-      .where("result='success'")
+      .where(transactions: { result: "success"})
       .group(:id)
-      .reorder('total_revenue DESC')
+      .reorder('total_item_revenue DESC')
   end
 end
