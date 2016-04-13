@@ -12,7 +12,11 @@ module Api
       end
 
       def index
-        respond_with Merchant.ranked_by_revenue.take(params[:quantity].to_i)
+        if params[:date]
+          respond_with Invoice.total_revenue_by_date(params[:date])
+        else
+          respond_with Merchant.ranked_by_revenue.take(params[:quantity].to_i)
+        end
       end
     end
   end

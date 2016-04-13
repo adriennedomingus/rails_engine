@@ -25,7 +25,7 @@ class Merchant < ActiveRecord::Base
       .where(transactions: { result: "success"})
       .where(invoices: { merchant_id: self.id})
       .sum('invoice_items.unit_price * invoice_items.quantity')
-    { revenue: revenue.to_f.to_s}
+    { revenue: revenue }
   end
 
   def items_sold
@@ -41,7 +41,7 @@ class Merchant < ActiveRecord::Base
       .where(invoices: { merchant_id: self.id})
       .where(invoices: { created_at: date})
       .sum('invoice_items.unit_price * invoice_items.quantity')
-    { revenue: revenue.to_f.to_s}
+    { revenue: revenue }
   end
 
   # def customers_with_pending_invoices
