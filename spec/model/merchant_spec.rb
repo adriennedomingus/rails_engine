@@ -26,9 +26,4 @@ RSpec.describe Merchant, type: :model do
     create_transactions
     expect(Merchant.first.items_sold).to eq(189)
   end
-
-  it "returns favorite customer" do
-    create_transactions
-    expect(Merchant.first.favorite_customer).to eq(Customer.find_by(first_name: "Chelsea"))
-  end
 end
