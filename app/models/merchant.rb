@@ -3,21 +3,20 @@ class Merchant < ActiveRecord::Base
   has_many :invoices
   has_many :transactions, through: :invoices
   has_many :invoice_items, through: :invoices
+  has_many :customers, through: :invoices
 
   def self.ranked_by_revenue
-    select('id', 'name', 'SUM(invoice_items.unit_price * invoice_items.quantity) AS total_merchant_revenue')
-      .joins(invoice_items: [:invoice, :transactions])
-      .where(transactions: { result: "success"})
+    joins(invoices: [:transactions, :invoice_items])
+      .where(transactions: { result: "success" })
       .group(:id)
-      .reorder('total_merchant_revenue DESC')
+      .order('SUM(invoice_items.unit_price * invoice_items.quantity) DESC')
   end
 
   def self.ranked_by_items_sold
-    select('id', 'name', 'SUM(invoice_items.quantity) AS total_items_sold')
-      .joins(invoice_items: [:invoice, :transactions])
-      .where(transactions: { result: "success" })
-      .group(:id)
-      .reorder('total_items_sold DESC')
+    joins(invoices: [:transactions, :invoice_items])
+    .where(transactions: { result: "success"} )
+    .group(:id)
+    .order('SUM(invoice_items.quantity) DESC')
   end
 
   def total_revenue
@@ -44,13 +43,7 @@ class Merchant < ActiveRecord::Base
     { revenue: revenue }
   end
 
-  # def customers_with_pending_invoices
-  #   Customer.joins(:invoices).joins(:transactions).where(invoices: { merchant_id: self.id}).where(transactions: { result: "failed" }).uniq
-  # end
-
   def customers_with_pending_invoices
-    invoices.joins(:transactions).where(transactions: {result: "failed"}).map do |invoice|
-      invoice.customer
-    end.uniq
+    Customer.where(id: invoices.pending.pluck(:customer_id))
   end
 end

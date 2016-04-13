@@ -5,6 +5,8 @@ class Invoice < ActiveRecord::Base
   has_many :items, through: :invoice_items
   has_many :transactions
 
+  scope :pending, -> { joins(:transactions).where(transactions: { result: 'failed' })}
+
   def self.total_revenue_by_date(date)
     revenue = where(created_at: date)
       .joins(:invoice_items)
