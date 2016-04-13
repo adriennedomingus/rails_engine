@@ -10,6 +10,7 @@ gem 'jbuilder', '~> 2.0'
 gem 'sdoc', '~> 0.4.0', group: :doc
 gem 'responders'
 gem "active_model_serializers", github: "rails-api/active_model_serializers"
+gem 'shoulda-matchers', '~> 3.1'
 
 group :development, :test do
   gem 'byebug'
