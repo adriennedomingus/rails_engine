@@ -7,13 +7,17 @@ class Merchant < ActiveRecord::Base
   def self.ranked_by_revenue
     select('id', 'name', 'SUM(invoice_items.unit_price * invoice_items.quantity) AS total_merchant_revenue')
       .joins(invoice_items: [:invoice, :transactions])
-      .where("result = ?", "success")
+      .where(transactions: { result: "success"})
       .group(:id)
       .reorder('total_merchant_revenue DESC')
   end
 
   def self.ranked_by_items_sold
-    all.sort_by { |merchant| merchant.items_sold }.reverse
+    select('id', 'name', 'SUM(invoice_items.quantity) AS total_items_sold')
+      .joins(invoice_items: [:invoice, :transactions])
+      .where(transactions: { result: "success" })
+      .group(:id)
+      .reorder('total_items_sold DESC')
   end
 
   def total_revenue
