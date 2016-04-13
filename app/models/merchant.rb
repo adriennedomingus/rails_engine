@@ -20,24 +20,22 @@ class Merchant < ActiveRecord::Base
   end
 
   def total_revenue
-    revenue = invoices.joins(invoice_items: [:invoice, :transactions])
-      .where(transactions: { result: "success"})
-      .where(invoices: { merchant_id: self.id})
+    revenue = invoices.joins(:invoice_items, :transactions)
+      .where(transactions: { result: "success" })
       .sum('invoice_items.unit_price * invoice_items.quantity')
     { revenue: revenue }
   end
 
   def items_sold
     invoices
-    .joins(invoice_items: [:invoice, :transactions])
+    .joins(invoice_items: :transactions)
     .where(transactions: {result: "success"})
     .sum('invoice_items.quantity')
   end
 
   def total_revenue_by_date(date)
-    revenue = invoices.joins(invoice_items: [:invoice, :transactions])
+    revenue = invoices.joins(invoice_items: :transactions)
       .where(transactions: { result: "success"})
-      .where(invoices: { merchant_id: self.id})
       .where(invoices: { created_at: date})
       .sum('invoice_items.unit_price * invoice_items.quantity')
     { revenue: revenue }
@@ -48,9 +46,8 @@ class Merchant < ActiveRecord::Base
   end
 
   def favorite_customer
-    Customer.joins(invoice_items: [:invoice, :transactions])
+    customers.joins(invoice_items: :transactions)
       .where(transactions: { result: 'success' })
-      .where(invoices: { merchant_id: self.id} )
       .group(:id)
       .order('transactions.count DESC')
       .first

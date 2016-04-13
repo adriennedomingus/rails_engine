@@ -11,7 +11,7 @@ class Item < ActiveRecord::Base
   end
 
   def self.ranked_by_number_sold
-    joins(invoice_items: [:invoice, :transactions])
+    joins(invoice_items: :transactions)
       .where(transactions: { result: "success" })
       .group(:id)
       .order('SUM(invoice_items.quantity) DESC')
