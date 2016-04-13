@@ -6,6 +6,7 @@ Rails.application.routes.draw do
       get "/customers/random", to: "customers/random#show"
       get "/customers/:id/invoices", to: "customers/invoices#index"
       get "/customers/:id/transactions", to: "customers/transactions#index"
+      get "/customers/:id/favorite_merchant", to: "customers/merchants#show"
 
       get "/invoice_items/find", to: "invoice_items/finder#show"
       get "/invoice_items/find_all", to: "invoice_items/finder#index"
