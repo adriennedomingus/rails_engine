@@ -25,27 +25,19 @@ class Merchant < ActiveRecord::Base
   end
 
   def items_sold
-    items_sold = 0
-    self.invoices.each do |invoice|
-      invoice.transactions.where(result: "success").each do |transaction|
-        transaction.invoice_items.each do |invoice_item|
-          items_sold += invoice_item.quantity
-        end
-      end
-    end
-    items_sold
+    invoices
+    .joins(invoice_items: [:invoice, :transactions])
+    .where(transactions: {result: "success"})
+    .sum('invoice_items.quantity')
   end
 
   def total_revenue_by_date(date)
-    revenue = 0
-    self.invoices.where(created_at: date).each do |invoice|
-      invoice.transactions.where(result: "success").each do |transaction|
-        transaction.invoice.invoice_items.each do |invoice_item|
-          revenue += (invoice_item.quantity * invoice_item.unit_price)
-        end
-      end
-    end
-    { revenue: revenue.to_f.to_s }
+    revenue = invoices.joins(invoice_items: [:invoice, :transactions])
+      .where(transactions: { result: "success"})
+      .where(invoices: { merchant_id: self.id})
+      .where(invoices: { created_at: date})
+      .sum('invoice_items.unit_price * invoice_items.quantity')
+    { revenue: revenue.to_f.to_s}
   end
 
   # def customers_with_pending_invoices
@@ -53,7 +45,7 @@ class Merchant < ActiveRecord::Base
   # end
 
   def customers_with_pending_invoices
-    invoices.joins(:transactions).where("result = ?", "failed").map do |invoice|
+    invoices.joins(:transactions).where(transactions: {result: "failed"}).map do |invoice|
       invoice.customer
     end.uniq
   end
