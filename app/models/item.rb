@@ -18,10 +18,11 @@ class Item < ActiveRecord::Base
   end
 
   def best_day
-    invoices.joins(:transactions, :invoice_items)
+    result = invoices.select('invoices.created_at')
+      .joins(:transactions)
       .where(transactions: { result: "success" })
-      .group(:id, 'invoices.created_at')
+      .group(:created_at)
       .order('SUM(invoice_items.unit_price * invoice_items.quantity) DESC')
-      .first[:created_at].to_json
+    { best_day: result.first.created_at}
   end
 end
