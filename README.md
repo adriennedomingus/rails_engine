@@ -10,10 +10,10 @@ The project provides API endpoints to see details about merchants, customers, an
 * Clone the project down  
 * `cd` into the project directory  
 * `bundle`  
-* To set up the database, run `rake db:create db:migrate db:import_csv` This imports data from included CSV files into the database, and may take several minutes. 
+* To set up the database, run `rake db:create db:migrate db:import_csv` This imports data from included CSV files into the database, and may take several minutes.
 
 #### Test Suite
 
-The test suite is written in RSpec, and uses a combination of request specs and model specs. The entire suite can be run with `rspec`. You may need to run `rake db:migrate RAILS_ENV=test`.  
+The test suite is written in RSpec, and uses a combination of request specs and model specs. After running `rake db:migrate RAILS_ENV=test`, the entire suite can be run with `rspec`.   
 
 A spec harness and instructions for its usage can be found [here](https://github.com/turingschool/rales_engine_spec_harness)
